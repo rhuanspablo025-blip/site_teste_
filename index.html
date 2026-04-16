@@ -1,44 +1,263 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nosso Universo: 15 Anos ✨</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,600&family=Montserrat:wght@200;400&family=Pinyon+Script&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Minha Princesa 👑</title>
+
+<style>
+body {
+    margin: 0;
+    background: black;
+    color: white;
+    font-family: Arial;
+    text-align: center;
+    overflow: hidden;
+}
+
+.game {
+    padding: 20px;
+    transition: all 1s ease;
+}
+
+.fade-out {
+    opacity: 0;
+    filter: blur(10px);
+}
+
+#fase {
+    color: #ff4d88;
+}
+
+img {
+    width: 260px;
+    height: 320px;
+    object-fit: cover;
+    border-radius: 15px;
+    margin-top: 20px;
+    animation: zoom 6s infinite alternate;
+    box-shadow: 0 0 20px #ff4d88;
+}
+
+@keyframes zoom {
+    from { transform: scale(1); }
+    to { transform: scale(1.1); }
+}
+
+button {
+    margin-top: 20px;
+    padding: 15px 25px;
+    background: #ff4d88;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+}
+
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+</style>
+
 </head>
 <body>
 
-    <div id="loader">
-        <div class="loader-content">
-            <h2 class="pinyon">Carregando o Universo...</h2>
-            <div class="progress-bar"><div id="progress"></div></div>
+<audio id="musica" loop>
+    <source src="musica.mp3" type="audio/mpeg">
+</audio>
+
+<div class="game" id="game">
+    <h2 id="fase">Clique para começar ❤️</h2>
+    <img id="foto" src="img/foto1.jpg">
+    <p id="texto"></p>
+    <button onclick="proximaFase()">Começar 💖</button>
+</div>
+
+<canvas id="canvas"></canvas>
+
+<script>
+let fase = 0;
+let musicaIniciada = false;
+
+const fases = [
+    "Minha princesa... hoje começa algo especial ❤️",
+    "Você é simplesmente incrível...",
+    "Cada detalhe seu me encanta...",
+    "Seu sorriso muda meu dia...",
+    "Minha neném, minha vida...",
+    "Você é única...",
+    "Minha mulher maravilhosa...",
+    "Você ilumina tudo...",
+    "Eu amo cada momento contigo...",
+    "Você é meu orgulho...",
+    "Minha vidinha linda...",
+    "Minha razão de sorrir...",
+    "Você é perfeita do seu jeito...",
+    "E eu sou completamente apaixonado por você..."
+];
+
+function proximaFase() {
+
+    const game = document.getElementById("game");
+    game.classList.add("fade-out");
+
+    setTimeout(() => {
+
+        if (!musicaIniciada) {
+            const musica = document.getElementById("musica");
+            musica.volume = 0.2;
+            musica.play();
+            musicaIniciada = true;
+        }
+
+        if (fase < 14) {
+
+            document.getElementById("fase").innerText = `Fase ${fase+1} de 15 ❤️`;
+            document.getElementById("foto").src = `img/foto${(fase % 5) + 1}.jpg`;
+
+            escreverTexto(fases[fase]);
+            fase++;
+
+        } else {
+            faseFinal();
+            return;
+        }
+
+        game.classList.remove("fade-out");
+
+    }, 900);
+}
+
+function escreverTexto(msg) {
+    let i = 0;
+    const el = document.getElementById("texto");
+    el.innerHTML = "";
+
+    function digitar() {
+        if (i < msg.length) {
+            el.innerHTML += msg.charAt(i);
+            i++;
+            setTimeout(digitar, 28);
+        }
+    }
+
+    digitar();
+}
+
+function faseFinal() {
+
+    document.body.innerHTML = `
+        <h1>Feliz 15 anos, minha princesa 👑</h1>
+
+        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px;">
+            <img src="img/foto1.jpg" width="120">
+            <img src="img/foto2.jpg" width="120">
+            <img src="img/foto3.jpg" width="120">
+            <img src="img/foto4.jpg" width="120">
+            <img src="img/foto5.jpg" width="120">
         </div>
-    </div>
 
-    <div id="ui">
-        <div class="top-bar">
-            <span id="phase-num">FASE 01</span>
-            <div class="line"></div>
-        </div>
+        <p id="finalText" style="padding:20px;font-size:20px;"></p>
 
-        <div class="center-content">
-            <h1 id="main-text" class="blur-in">O início de tudo...</h1>
-        </div>
+        <h2>Pra sempre nós 💖</h2>
 
-        <div class="bottom-bar">
-            <button id="next-btn">EXPLORAR PRÓXIMA MEMÓRIA</button>
-        </div>
-    </div>
+        <canvas id="finalCanvas"></canvas>
+    `;
 
-    <canvas id="webgl"></canvas>
+    textoFinal();
+    animarCoracoes();
+}
 
-    <audio id="bg-music" loop>
-        <source src="musica.mp3" type="audio/mpeg">
-    </audio>
+const mensagemFinal = [
+    "Hoje o mundo comemora os seus 15 anos…",
+    "mas pra mim, é o dia mais importante que existe.",
+    
+    "Minha princesa, minha neném, minha vida…",
+    "você não faz ideia do quanto é especial pra mim.",
+    
+    "Você é aquela pessoa que chegou e mudou tudo.",
+    "meu jeito, meus dias, minha forma de ver a vida.",
+    
+    "Cada detalhe seu, cada sorriso, cada momento…",
+    "fica marcado em mim de um jeito que não tem explicação.",
+    
+    "Minha mulher, meu amor, meu amorzinho…",
+    "você é, sem dúvida, o amor da minha vida.",
+    
+    "E hoje, nos seus 15 anos…",
+    "eu só quero que você nunca esqueça de uma coisa:",
+    
+    "eu tô aqui.",
+    "por você.",
+    "com você.",
+    
+    "pra tudo.",
+    
+    "Eu te amo infinitamente ❤️"
+];
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="script.js"></script>
+function textoFinal() {
+    let i = 0;
+    const el = document.getElementById("finalText");
+
+    function linha() {
+        if (i < mensagemFinal.length) {
+            el.innerHTML += mensagemFinal[i] + "<br><br>";
+            i++;
+            setTimeout(linha, 1500);
+        }
+    }
+
+    linha();
+}
+
+function animarCoracoes() {
+
+    const canvas = document.getElementById("finalCanvas");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let hearts = [];
+
+    for (let i = 0; i < 100; i++) {
+        hearts.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 8 + 2,
+            speed: Math.random() * 2 + 1
+        });
+    }
+
+    function drawHeart(x, y, size) {
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.bezierCurveTo(x, y - size, x - size, y - size, x - size, y);
+        ctx.bezierCurveTo(x - size, y + size, x, y + size * 1.5, x, y + size * 2);
+        ctx.bezierCurveTo(x, y + size * 1.5, x + size, y + size, x + size, y);
+        ctx.bezierCurveTo(x + size, y - size, x, y - size, x, y);
+        ctx.fillStyle = "pink";
+        ctx.fill();
+    }
+
+    function loop() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        hearts.forEach(h => {
+            drawHeart(h.x, h.y, h.size);
+            h.y -= h.speed;
+            if (h.y < 0) h.y = canvas.height;
+        });
+
+        requestAnimationFrame(loop);
+    }
+
+    loop();
+}
+</script>
+
 </body>
 </html>
